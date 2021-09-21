@@ -1,0 +1,342 @@
+"""Exposes a URL that specifies the behaviour of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behaviour of this scalar."""
+  url: String!
+) on SCALAR
+
+input AuthUserInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type AuthUserPayload {
+  me: User
+  token: String
+  error: String
+  clientMutationId: String
+}
+
+input CreateReviewInput {
+  review: String!
+  score: Float!
+  movieId: String!
+  clientMutationId: String
+}
+
+type CreateReviewPayload {
+  review: Review
+  error: String
+  clientMutationId: String
+}
+
+input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type CreateUserPayload {
+  me: User
+  token: String
+  error: String
+  clientMutationId: String
+}
+
+input DeleteReviewInput {
+  movieId: String!
+  clientMutationId: String
+}
+
+type DeleteReviewPayload {
+  error: String
+  success: Boolean
+  clientMutationId: String
+}
+
+input DeleteUserInput {
+  clientMutationId: String
+}
+
+type DeleteUserPayload {
+  success: Boolean
+  error: String
+  clientMutationId: String
+}
+
+"""Genre Type"""
+type Genre implements Node {
+  """The ID of an object"""
+  id: ID!
+  _id: String
+  genreId: Int
+  genreName: String
+}
+
+"""A connection to a list of items."""
+type GenreConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [GenreEdge]
+}
+
+"""An edge in a connection."""
+type GenreEdge {
+  """The item at the end of the edge"""
+  node: Genre
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""Movie type"""
+type Movie implements Node {
+  """The ID of an object"""
+  id: ID!
+  _id: String
+  tmdbId: String
+  title: String
+  firstAirDate: String
+  overview: String
+  score: Float
+  genres(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): GenreConnection
+  reviews(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ReviewConnection
+  posterPath: String
+  createdAt: String
+  deletedAt: String
+}
+
+"""A connection to a list of items."""
+type MovieConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MovieEdge]
+}
+
+"""An edge in a connection."""
+type MovieEdge {
+  """The item at the end of the edge"""
+  node: Movie
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""Root of all mutations"""
+type Mutation {
+  """Create User Mutation"""
+  CreateUserMutation(input: CreateUserInput!): CreateUserPayload
+
+  """Authenticate User Mutation"""
+  AuthUserMutation(input: AuthUserInput!): AuthUserPayload
+
+  """Delete User Mutation"""
+  DeleteUserMutation(input: DeleteUserInput!): DeleteUserPayload
+
+  """Register Movie Mutation"""
+  RegisterMovieByNameMutation(input: RegisterMovieInput!): RegisterMoviePayload
+
+  """Register movie by ID mutation"""
+  RegisterMovieByIdMutation(input: RegisterMovieByIdInput!): RegisterMovieByIdPayload
+
+  """Populate Genres Mutation"""
+  PopulateGenresMutation(input: PopulateGenresInput!): PopulateGenresPayload
+
+  """Create review mutation"""
+  CreateReviewMutation(input: CreateReviewInput!): CreateReviewPayload
+
+  """Delete review mutation"""
+  DeleteReviewMutation(input: DeleteReviewInput!): DeleteReviewPayload
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+input PopulateGenresInput {
+  clientMutationId: String
+}
+
+type PopulateGenresPayload {
+  error: String
+  success: Boolean
+  clientMutationId: String
+}
+
+"""The root of all queries"""
+type Query {
+  hi: String
+
+  """Recover logged user's informations"""
+  me: User
+
+  """Query for a movie by ID"""
+  movieById(id: String!): Movie
+
+  """Query for a movie by name"""
+  movieByName(title: String!): Movie
+  movies(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): MovieConnection
+  moviesByGenre(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+    genreId: String!
+  ): MovieConnection
+  genres(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): GenreConnection
+}
+
+input RegisterMovieByIdInput {
+  id: Int!
+  clientMutationId: String
+}
+
+type RegisterMovieByIdPayload {
+  movie: Movie
+  error: String
+  clientMutationId: String
+}
+
+input RegisterMovieInput {
+  title: String!
+  clientMutationId: String
+}
+
+type RegisterMoviePayload {
+  movie: Movie
+  error: String
+  clientMutationId: String
+}
+
+"""Review Type"""
+type Review implements Node {
+  """The ID of an object"""
+  id: ID!
+  _id: String
+  review: String
+  score: Float
+  userId: User
+  movieId: Movie
+  createdAt: String
+  deletedAt: String
+}
+
+"""A connection to a list of items."""
+type ReviewConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ReviewEdge]
+}
+
+"""An edge in a connection."""
+type ReviewEdge {
+  """The item at the end of the edge"""
+  node: Review
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""User type"""
+type User implements Node {
+  """The ID of an object"""
+  id: ID!
+  _id: String
+  username: String
+  email: String
+  password: String
+  reviews(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ReviewConnection
+  createdAt: String
+}
+
