@@ -12,7 +12,7 @@ export const GlobalStyle = createGlobalStyle`
       
     }
     body, input, textarea, button {
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Roboto Slab', serif;
         font-weight: 400;
     }
     h1, h1, h3, h4, h5, h6, strong {

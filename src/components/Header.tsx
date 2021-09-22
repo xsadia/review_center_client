@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { FaComments } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -16,13 +17,19 @@ const HeaderTitleContainer = styled.div`
     align-items: center;
     color: #fff;
     svg {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
     }
 `;
 
 const HeaderTitle = styled.h1`
-    font-size: 1.17rem;
+    font-size: 1.5rem;
+    font-weight: 600;
     margin-right: 0.4rem;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 `;
 
 export const Header = () => {
@@ -30,8 +37,9 @@ export const Header = () => {
         <Container>
             <HeaderTitleContainer>
                 <HeaderTitle>
-                    Review Center
-
+                    <Link to="/">
+                        Review Center
+                    </Link>
                 </HeaderTitle>
                 <FaComments />
             </ HeaderTitleContainer>
