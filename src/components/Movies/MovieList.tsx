@@ -27,7 +27,7 @@ const MoviesQuery = graphql`
 
 const preloadedQuery = loadQuery<MovieListQueryType>(
   RelayEnviroment,
-  MovieListQUery,
+  MoviesQuery,
   {},
 );
 
