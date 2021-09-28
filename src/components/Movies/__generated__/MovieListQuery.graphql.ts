@@ -4,15 +4,24 @@
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type MovieListQueryVariables = {};
+export type MovieListQueryVariables = {
+    first: number;
+};
 export type MovieListQueryResponse = {
     readonly movies: {
         readonly edges: ReadonlyArray<{
+            readonly cursor: string;
             readonly node: {
                 readonly id: string;
                 readonly " $fragmentRefs": FragmentRefs<"Movie_movie">;
             } | null;
         } | null> | null;
+        readonly pageInfo: {
+            readonly hasNextPage: boolean;
+            readonly hasPreviousPage: boolean;
+            readonly startCursor: string | null;
+            readonly endCursor: string | null;
+        };
     } | null;
 };
 export type MovieListQuery = {
@@ -23,13 +32,22 @@ export type MovieListQuery = {
 
 
 /*
-query MovieListQuery {
-  movies {
+query MovieListQuery(
+  $first: Int!
+) {
+  movies(first: $first) {
     edges {
+      cursor
       node {
         id
         ...Movie_movie
       }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
     }
   }
 }
@@ -44,23 +62,83 @@ fragment Movie_movie on Movie {
 */
 
 const node: ConcreteRequest = (function(){
-var v0 = {
+var v0 = [
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "first"
+  }
+],
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "first"
+  }
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasPreviousPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "startCursor",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
 };
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "MovieListQuery",
     "selections": [
       {
         "alias": null,
-        "args": null,
+        "args": (v1/*: any*/),
         "concreteType": "MovieConnection",
         "kind": "LinkedField",
         "name": "movies",
@@ -74,6 +152,7 @@ return {
             "name": "edges",
             "plural": true,
             "selections": [
+              (v2/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -82,7 +161,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v0/*: any*/),
+                  (v3/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
@@ -93,7 +172,8 @@ return {
               }
             ],
             "storageKey": null
-          }
+          },
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
@@ -103,13 +183,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "MovieListQuery",
     "selections": [
       {
         "alias": null,
-        "args": null,
+        "args": (v1/*: any*/),
         "concreteType": "MovieConnection",
         "kind": "LinkedField",
         "name": "movies",
@@ -123,6 +203,7 @@ return {
             "name": "edges",
             "plural": true,
             "selections": [
+              (v2/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -131,7 +212,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v0/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -165,21 +246,22 @@ return {
               }
             ],
             "storageKey": null
-          }
+          },
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "63720f88a9dcd5ff123eacfc4bc19aaf",
+    "cacheID": "93a57827dee222e7883c69bb030ae7df",
     "id": null,
     "metadata": {},
     "name": "MovieListQuery",
     "operationKind": "query",
-    "text": "query MovieListQuery {\n  movies {\n    edges {\n      node {\n        id\n        ...Movie_movie\n      }\n    }\n  }\n}\n\nfragment Movie_movie on Movie {\n  id\n  title\n  firstAirDate\n  score\n  posterPath\n}\n"
+    "text": "query MovieListQuery(\n  $first: Int!\n) {\n  movies(first: $first) {\n    edges {\n      cursor\n      node {\n        id\n        ...Movie_movie\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n\nfragment Movie_movie on Movie {\n  id\n  title\n  firstAirDate\n  score\n  posterPath\n}\n"
   }
 };
 })();
-(node as any).hash = '35e9b891ecf05d78c78e300b07ecd371';
+(node as any).hash = '6ef6f03d87be214fd1e00c76c2120ff7';
 export default node;

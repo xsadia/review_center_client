@@ -18,13 +18,20 @@ const Container = styled.div`
 `;
 
 const MoviesQuery = graphql`
-  query MovieListQuery {
-    movies {
+  query MovieListQuery($first: Int!) {
+    movies(first: $first) {
       edges {
+        cursor
         node {
           id
           ...Movie_movie
         }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
       }
     }
   }
@@ -33,7 +40,7 @@ const MoviesQuery = graphql`
 const preloadedQuery = loadQuery<MovieListQueryType>(
   RelayEnviroment,
   MoviesQuery,
-  {},
+  { first: 8 },
 );
 
 export const MovieList = () => {

@@ -4,7 +4,7 @@ import { useMutation } from 'react-relay';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { ReviewInputMutation } from './__generated__/ReviewInputMutation.graphql';
-import { ConnectionHandler, RecordProxy, ROOT_ID } from 'relay-runtime';
+import { ConnectionHandler, RecordProxy } from 'relay-runtime';
 
 type ReviewInputProps = {
   movieId: string;
@@ -102,7 +102,7 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
         },
       },
       onCompleted: ({ CreateReviewMutation }) => {
-        if (CreateReviewMutation.error !== null) {
+        if (CreateReviewMutation.error) {
           toast(CreateReviewMutation.error, {
             type: 'error',
             theme: 'dark',
@@ -116,6 +116,26 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
           });
 
           return;
+        }
+      },
+      updater: (store) => {
+        const createReviewField = store.getRootField('CreateReviewMutation');
+        const newReview = createReviewField.getLinkedRecord('review');
+
+        const movieProxy = store.get(movieId);
+
+        const connection = ConnectionHandler.getConnection(
+          movieProxy,
+          'Movie_reviews',
+        );
+
+        console.log(newReview);
+
+        if (connection) {
+          ConnectionHandler.insertEdgeAfter(
+            connection as RecordProxy,
+            newReview,
+          );
         }
       },
     });

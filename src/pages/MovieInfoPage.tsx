@@ -10,6 +10,7 @@ import { ReviewInput } from '../components/Movies/ReviewInput';
 import { Review } from '../components/Movies/Review';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ReviewWrapper } from '../components/Movies/ReviewWrapper';
 
 type MovieParams = {
   id: string;
@@ -53,15 +54,6 @@ const ScoreContainer = styled.div`
   }
 `;
 
-const ReviewContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  width: 640px;
-  margin-top: 8px;
-  padding-bottom: 16px;
-`;
-
 const MovieScore = styled.h3`
   color: var(--pink);
   font-size: 1.75rem;
@@ -98,7 +90,7 @@ const DateGenresContainer = styled.div`
 export const MovieInfoPage = () => {
   const { params } = useRouteMatch<MovieParams>();
 
-  const data = useLazyLoadQuery<MovieInfoPageQueryType>(
+  const response = useLazyLoadQuery<MovieInfoPageQueryType>(
     graphql`
       query MovieInfoPageQuery($id: String!) {
         movieById(id: $id) {
@@ -109,18 +101,7 @@ export const MovieInfoPage = () => {
           overview
           score
           posterPath
-          reviews {
-            edges {
-              node {
-                review
-                score
-                userId {
-                  _id
-                  username
-                }
-              }
-            }
-          }
+          ...ReviewWrapper_reviews
           genres {
             edges {
               node {
@@ -132,7 +113,7 @@ export const MovieInfoPage = () => {
       }
     `,
     { id: params.id },
-    { fetchPolicy: 'network-only' },
+    { fetchPolicy: 'store-and-network' },
   );
 
   return (
@@ -141,40 +122,31 @@ export const MovieInfoPage = () => {
 
       <Container>
         <MovieContainer>
-          <MoviePoster src={data.movieById.posterPath} />
+          <MoviePoster src={response.movieById.posterPath} />
 
           <InformationContainer>
             <TitleContainer>
-              <MovieTitle>{data.movieById.title}</MovieTitle>
+              <MovieTitle>{response.movieById.title}</MovieTitle>
               <ScoreContainer>
-                <MovieScore>{data.movieById.score}</MovieScore>
+                <MovieScore>{response.movieById.score}</MovieScore>
                 <BsStarFill />
               </ScoreContainer>
               <DateGenresContainer>
                 <MovieDate>
                   {new Date(
-                    Number(data.movieById.firstAirDate),
+                    Number(response.movieById.firstAirDate),
                   ).toLocaleDateString('pt-BR', { year: 'numeric' })}
                 </MovieDate>
-                {data.movieById.genres.edges.map(({ node }) => (
+                {response.movieById.genres.edges.map(({ node }) => (
                   <GenreTag key={node.genreName} genreName={node.genreName} />
                 ))}
               </DateGenresContainer>
             </TitleContainer>
-            <MovieOverview>{data.movieById.overview}</MovieOverview>
+            <MovieOverview>{response.movieById.overview}</MovieOverview>
           </InformationContainer>
         </MovieContainer>
-        <ReviewInput movieId={data.movieById._id} />
-        <ReviewContainer>
-          {data.movieById.reviews.edges.map(({ node }) => (
-            <Review
-              key={node.userId._id}
-              username={node.userId.username}
-              review={node.review}
-              score={node.score}
-            />
-          ))}
-        </ReviewContainer>
+        <ReviewInput movieId={response.movieById.id} />
+        <ReviewWrapper query={response.movieById} />
       </Container>
       <ToastContainer />
     </>

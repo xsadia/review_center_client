@@ -3,6 +3,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
+import { FragmentRefs } from "relay-runtime";
 export type MovieInfoPageQueryVariables = {
     id: string;
 };
@@ -15,18 +16,6 @@ export type MovieInfoPageQueryResponse = {
         readonly overview: string | null;
         readonly score: number | null;
         readonly posterPath: string | null;
-        readonly reviews: {
-            readonly edges: ReadonlyArray<{
-                readonly node: {
-                    readonly review: string | null;
-                    readonly score: number | null;
-                    readonly userId: {
-                        readonly _id: string | null;
-                        readonly username: string | null;
-                    } | null;
-                } | null;
-            } | null> | null;
-        } | null;
         readonly genres: {
             readonly edges: ReadonlyArray<{
                 readonly node: {
@@ -34,6 +23,7 @@ export type MovieInfoPageQueryResponse = {
                 } | null;
             } | null> | null;
         } | null;
+        readonly " $fragmentRefs": FragmentRefs<"ReviewWrapper_reviews">;
     } | null;
 };
 export type MovieInfoPageQuery = {
@@ -55,20 +45,7 @@ query MovieInfoPageQuery(
     overview
     score
     posterPath
-    reviews {
-      edges {
-        node {
-          review
-          score
-          userId {
-            _id
-            username
-            id
-          }
-          id
-        }
-      }
-    }
+    ...ReviewWrapper_reviews
     genres {
       edges {
         node {
@@ -76,6 +53,31 @@ query MovieInfoPageQuery(
           id
         }
       }
+    }
+  }
+}
+
+fragment ReviewWrapper_reviews on Movie {
+  reviews(first: 2147483647) {
+    edges {
+      cursor
+      node {
+        review
+        score
+        userId {
+          _id
+          username
+          id
+        }
+        id
+        __typename
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
     }
   }
 }
@@ -149,23 +151,16 @@ v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "review",
-  "storageKey": null
-},
-v10 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "username",
-  "storageKey": null
-},
-v11 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "genreName",
   "storageKey": null
-};
+},
+v10 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 2147483647
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -191,54 +186,6 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "ReviewConnection",
-            "kind": "LinkedField",
-            "name": "reviews",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "ReviewEdge",
-                "kind": "LinkedField",
-                "name": "edges",
-                "plural": true,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Review",
-                    "kind": "LinkedField",
-                    "name": "node",
-                    "plural": false,
-                    "selections": [
-                      (v9/*: any*/),
-                      (v7/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "User",
-                        "kind": "LinkedField",
-                        "name": "userId",
-                        "plural": false,
-                        "selections": [
-                          (v2/*: any*/),
-                          (v10/*: any*/)
-                        ],
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
             "concreteType": "GenreConnection",
             "kind": "LinkedField",
             "name": "genres",
@@ -260,7 +207,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v11/*: any*/)
+                      (v9/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -269,6 +216,11 @@ return {
               }
             ],
             "storageKey": null
+          },
+          {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "ReviewWrapper_reviews"
           }
         ],
         "storageKey": null
@@ -300,7 +252,7 @@ return {
           (v8/*: any*/),
           {
             "alias": null,
-            "args": null,
+            "args": (v10/*: any*/),
             "concreteType": "ReviewConnection",
             "kind": "LinkedField",
             "name": "reviews",
@@ -317,12 +269,25 @@ return {
                   {
                     "alias": null,
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "cursor",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
                     "concreteType": "Review",
                     "kind": "LinkedField",
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v9/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "review",
+                        "storageKey": null
+                      },
                       (v7/*: any*/),
                       {
                         "alias": null,
@@ -333,20 +298,81 @@ return {
                         "plural": false,
                         "selections": [
                           (v2/*: any*/),
-                          (v10/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "username",
+                            "storageKey": null
+                          },
                           (v3/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v3/*: any*/)
+                      (v3/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "__typename",
+                        "storageKey": null
+                      }
                     ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "PageInfo",
+                "kind": "LinkedField",
+                "name": "pageInfo",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasNextPage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasPreviousPage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "startCursor",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "endCursor",
                     "storageKey": null
                   }
                 ],
                 "storageKey": null
               }
             ],
-            "storageKey": null
+            "storageKey": "reviews(first:2147483647)"
+          },
+          {
+            "alias": null,
+            "args": (v10/*: any*/),
+            "filters": null,
+            "handle": "connection",
+            "key": "Movie_reviews",
+            "kind": "LinkedHandle",
+            "name": "reviews"
           },
           {
             "alias": null,
@@ -372,7 +398,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v11/*: any*/),
+                      (v9/*: any*/),
                       (v3/*: any*/)
                     ],
                     "storageKey": null
@@ -389,14 +415,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1dfdae8cf692bc87a0ccc95ae506eac5",
+    "cacheID": "eab82d78bdd8c08882354d900b572c86",
     "id": null,
     "metadata": {},
     "name": "MovieInfoPageQuery",
     "operationKind": "query",
-    "text": "query MovieInfoPageQuery(\n  $id: String!\n) {\n  movieById(id: $id) {\n    _id\n    id\n    title\n    firstAirDate\n    overview\n    score\n    posterPath\n    reviews {\n      edges {\n        node {\n          review\n          score\n          userId {\n            _id\n            username\n            id\n          }\n          id\n        }\n      }\n    }\n    genres {\n      edges {\n        node {\n          genreName\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query MovieInfoPageQuery(\n  $id: String!\n) {\n  movieById(id: $id) {\n    _id\n    id\n    title\n    firstAirDate\n    overview\n    score\n    posterPath\n    ...ReviewWrapper_reviews\n    genres {\n      edges {\n        node {\n          genreName\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment ReviewWrapper_reviews on Movie {\n  reviews(first: 2147483647) {\n    edges {\n      cursor\n      node {\n        review\n        score\n        userId {\n          _id\n          username\n          id\n        }\n        id\n        __typename\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '3b2700426c383bc43b301e7251b87656';
+(node as any).hash = 'cc0a4961a70220e9fd8080d0204d83be';
 export default node;
