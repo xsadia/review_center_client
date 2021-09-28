@@ -1,4 +1,5 @@
 import { graphql } from 'babel-plugin-relay/macro';
+import React from 'react';
 import { useFragment } from 'react-relay';
 import styled from 'styled-components';
 import { Review } from './Review';
@@ -48,12 +49,13 @@ export const ReviewWrapper = ({ query }: ReviewWrapperProps) => {
   return (
     <ReviewContainer>
       {reviews?.edges?.map(({ node }) => (
-        <Review
-          key={node.userId._id}
-          review={node.review}
-          username={node.userId.username}
-          score={node.score}
-        />
+        <React.Fragment key={node?.userId._id}>
+          <Review
+            review={node?.review}
+            username={node?.userId.username}
+            score={node?.score}
+          />
+        </React.Fragment>
       ))}
     </ReviewContainer>
   );

@@ -129,10 +129,8 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
           'Movie_reviews',
         );
 
-        console.log(newReview);
-
         if (connection) {
-          ConnectionHandler.insertEdgeAfter(
+          ConnectionHandler.insertEdgeBefore(
             connection as RecordProxy,
             newReview,
           );
