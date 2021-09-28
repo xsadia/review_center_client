@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
     :root {
@@ -9,8 +9,13 @@ export const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-      
     }
+
+    body {
+        overflow-x: hidden;
+        background-color: var(--background);
+    }
+
     body, input, textarea, button {
         font-family: 'Roboto Slab', serif;
         font-weight: 400;

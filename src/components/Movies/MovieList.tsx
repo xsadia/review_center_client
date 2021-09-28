@@ -3,13 +3,18 @@ import { loadQuery, usePreloadedQuery } from 'react-relay';
 import { MovieListQuery as MovieListQueryType } from './__generated__/MovieListQuery.graphql';
 import styled from 'styled-components';
 import RelayEnviroment from '../../relay/RelayEnviroment';
-import MovieListQUery from './__generated__/MovieListQuery.graphql';
+import MovieListQuery from './__generated__/MovieListQuery.graphql';
 import { Movie } from './Movie';
 import React from 'react';
 
 const Container = styled.div`
-  background-color: pink;
-  width: 90vw;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-flow: wrap;
+  height: 100vh;
+  width: 80vw;
+  margin-top: 48px;
 `;
 
 const MoviesQuery = graphql`
@@ -32,11 +37,10 @@ const preloadedQuery = loadQuery<MovieListQueryType>(
 );
 
 export const MovieList = () => {
-  const data = usePreloadedQuery(MovieListQUery, preloadedQuery, {
+  const data = usePreloadedQuery(MovieListQuery, preloadedQuery, {
     UNSTABLE_renderPolicy: 'full',
   });
 
-  console.log(data);
   return (
     <Container>
       {data?.movies.edges.map(({ node }) => (
@@ -44,7 +48,6 @@ export const MovieList = () => {
           <Movie query={node} />
         </React.Fragment>
       ))}
-      <h1>oi</h1>
     </Container>
   );
 };

@@ -35,8 +35,11 @@ query MovieListQuery {
 }
 
 fragment Movie_movie on Movie {
+  id
   title
-  overview
+  firstAirDate
+  score
+  posterPath
 }
 */
 
@@ -140,7 +143,21 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "overview",
+                    "name": "firstAirDate",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "score",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "posterPath",
                     "storageKey": null
                   }
                 ],
@@ -155,12 +172,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5a7a4df5b6dd1d2b2ca6f1e96bb53b9e",
+    "cacheID": "63720f88a9dcd5ff123eacfc4bc19aaf",
     "id": null,
     "metadata": {},
     "name": "MovieListQuery",
     "operationKind": "query",
-    "text": "query MovieListQuery {\n  movies {\n    edges {\n      node {\n        id\n        ...Movie_movie\n      }\n    }\n  }\n}\n\nfragment Movie_movie on Movie {\n  title\n  overview\n}\n"
+    "text": "query MovieListQuery {\n  movies {\n    edges {\n      node {\n        id\n        ...Movie_movie\n      }\n    }\n  }\n}\n\nfragment Movie_movie on Movie {\n  id\n  title\n  firstAirDate\n  score\n  posterPath\n}\n"
   }
 };
 })();
