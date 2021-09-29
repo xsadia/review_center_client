@@ -15,13 +15,16 @@ export type ReviewInputMutationVariables = {
 export type ReviewInputMutationResponse = {
     readonly CreateReviewMutation: {
         readonly review: {
-            readonly id: string;
-            readonly review: string | null;
-            readonly score: number | null;
-            readonly userId: {
+            readonly cursor: string;
+            readonly node: {
                 readonly id: string;
-                readonly _id: string | null;
-                readonly username: string | null;
+                readonly review: string | null;
+                readonly score: number | null;
+                readonly userId: {
+                    readonly id: string;
+                    readonly _id: string | null;
+                    readonly username: string | null;
+                } | null;
             } | null;
         } | null;
         readonly error: string | null;
@@ -40,13 +43,16 @@ mutation ReviewInputMutation(
 ) {
   CreateReviewMutation(input: $input) {
     review {
-      id
-      review
-      score
-      userId {
+      cursor
+      node {
         id
-        _id
-        username
+        review
+        score
+        userId {
+          id
+          _id
+          username
+        }
       }
     }
     error
@@ -87,32 +93,24 @@ v2 = [
       {
         "alias": null,
         "args": null,
-        "concreteType": "Review",
+        "concreteType": "ReviewEdge",
         "kind": "LinkedField",
         "name": "review",
         "plural": false,
         "selections": [
-          (v1/*: any*/),
           {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "review",
+            "name": "cursor",
             "storageKey": null
           },
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "score",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "User",
+            "concreteType": "Review",
             "kind": "LinkedField",
-            "name": "userId",
+            "name": "node",
             "plural": false,
             "selections": [
               (v1/*: any*/),
@@ -120,14 +118,40 @@ v2 = [
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "_id",
+                "name": "review",
                 "storageKey": null
               },
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "username",
+                "name": "score",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "userId",
+                "plural": false,
+                "selections": [
+                  (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "_id",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "username",
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               }
             ],
@@ -165,14 +189,14 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "bb5b7bea65964d1c159837149ece4918",
+    "cacheID": "4f0db699ca6ca260c0ad383803fc043b",
     "id": null,
     "metadata": {},
     "name": "ReviewInputMutation",
     "operationKind": "mutation",
-    "text": "mutation ReviewInputMutation(\n  $input: CreateReviewInput!\n) {\n  CreateReviewMutation(input: $input) {\n    review {\n      id\n      review\n      score\n      userId {\n        id\n        _id\n        username\n      }\n    }\n    error\n  }\n}\n"
+    "text": "mutation ReviewInputMutation(\n  $input: CreateReviewInput!\n) {\n  CreateReviewMutation(input: $input) {\n    review {\n      cursor\n      node {\n        id\n        review\n        score\n        userId {\n          id\n          _id\n          username\n        }\n      }\n    }\n    error\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'db982a7aa373137a5ed2eb68fefbc7d7';
+(node as any).hash = 'aba3ba4d5eef1fe52c97675a6cd4ff72';
 export default node;

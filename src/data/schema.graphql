@@ -25,7 +25,7 @@ input CreateReviewInput {
 }
 
 type CreateReviewPayload {
-  review: Review
+  review: ReviewEdge
   error: String
   clientMutationId: String
 }
