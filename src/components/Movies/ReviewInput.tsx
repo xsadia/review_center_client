@@ -68,20 +68,27 @@ const ScoreInput = styled.input`
 `;
 
 export const ReviewInput = ({ movieId }: ReviewInputProps) => {
+  //const connectionID = ConnectionHandler.getConnectionID()
   const [reviewContent, setReviewContent] = useState('');
   const [reviewScore, setReviewScore] = useState(null);
   const [commit, isPending] = useMutation<ReviewInputMutation>(
     graphql`
-      mutation ReviewInputMutation($input: CreateReviewInput!) {
+      mutation ReviewInputMutation(
+        #$connections: [ID!]!
+        $input: CreateReviewInput!
+      ) {
         CreateReviewMutation(input: $input) {
           review {
-            id
-            review
-            score
-            userId {
+            cursor
+            node {
               id
-              _id
-              username
+              review
+              score
+              userId {
+                id
+                _id
+                username
+              }
             }
           }
           error
@@ -95,6 +102,7 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
 
     commit({
       variables: {
+        //connections: [connectionID],
         input: {
           movieId,
           review: reviewContent,
@@ -119,9 +127,6 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
         }
       },
       updater: (store) => {
-        const createReviewField = store.getRootField('CreateReviewMutation');
-        const newReview = createReviewField.getLinkedRecord('review');
-
         const movieProxy = store.get(movieId);
 
         const connection = ConnectionHandler.getConnection(
@@ -129,14 +134,25 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
           'Movie_reviews',
         );
 
-        if (connection) {
-          ConnectionHandler.insertEdgeBefore(
-            connection as RecordProxy,
-            newReview,
-          );
+        const payload = store.getRootField('CreateReviewMutation');
+        const serverEdge = payload.getLinkedRecord('review');
+
+        const newEdge = ConnectionHandler.buildConnectionEdge(
+          store,
+          connection,
+          serverEdge,
+        );
+
+        if (!newEdge) {
+          return;
         }
+
+        ConnectionHandler.insertEdgeBefore(connection as RecordProxy, newEdge);
       },
     });
+
+    setReviewContent('');
+    setReviewScore(null);
   };
 
   return (
