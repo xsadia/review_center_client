@@ -16,9 +16,10 @@ const ReviewContainer = styled.div`
 
 type ReviewWrapperProps = {
   query: ReviewWrapper_reviews$key;
+  movieId: string;
 };
 
-export const ReviewWrapper = ({ query }: ReviewWrapperProps) => {
+export const ReviewWrapper = ({ query, movieId }: ReviewWrapperProps) => {
   const { reviews } = useFragment<ReviewWrapper_reviews$key>(
     graphql`
       fragment ReviewWrapper_reviews on Movie {
@@ -26,6 +27,7 @@ export const ReviewWrapper = ({ query }: ReviewWrapperProps) => {
           edges {
             cursor
             node {
+              id
               review
               score
               userId {
@@ -51,6 +53,8 @@ export const ReviewWrapper = ({ query }: ReviewWrapperProps) => {
       {reviews?.edges?.map(({ node }) => (
         <React.Fragment key={node?.userId._id}>
           <Review
+            id={node?.id}
+            movieId={movieId}
             review={node?.review}
             username={node?.userId.username}
             score={node?.score}

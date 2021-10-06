@@ -4,18 +4,13 @@
 
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type ReviewWrapper_reviews = {
-    readonly reviews: {
+export type MovieList_query = {
+    readonly movies: {
         readonly edges: ReadonlyArray<{
             readonly cursor: string;
             readonly node: {
                 readonly id: string;
-                readonly review: string | null;
-                readonly score: number | null;
-                readonly userId: {
-                    readonly _id: string | null;
-                    readonly username: string | null;
-                } | null;
+                readonly " $fragmentRefs": FragmentRefs<"Movie_movie">;
             } | null;
         } | null> | null;
         readonly pageInfo: {
@@ -25,45 +20,70 @@ export type ReviewWrapper_reviews = {
             readonly endCursor: string | null;
         };
     } | null;
-    readonly " $refType": "ReviewWrapper_reviews";
+    readonly " $refType": "MovieList_query";
 };
-export type ReviewWrapper_reviews$data = ReviewWrapper_reviews;
-export type ReviewWrapper_reviews$key = {
-    readonly " $data"?: ReviewWrapper_reviews$data;
-    readonly " $fragmentRefs": FragmentRefs<"ReviewWrapper_reviews">;
+export type MovieList_query$data = MovieList_query;
+export type MovieList_query$key = {
+    readonly " $data"?: MovieList_query$data;
+    readonly " $fragmentRefs": FragmentRefs<"MovieList_query">;
 };
 
 
 
-const node: ReaderFragment = {
-  "argumentDefinitions": [],
+const node: ReaderFragment = (function(){
+var v0 = [
+  "movies"
+];
+return {
+  "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "after"
+    },
+    {
+      "defaultValue": 4,
+      "kind": "LocalArgument",
+      "name": "first"
+    }
+  ],
   "kind": "Fragment",
   "metadata": {
     "connection": [
       {
-        "count": null,
-        "cursor": null,
+        "count": "first",
+        "cursor": "after",
         "direction": "forward",
-        "path": [
-          "reviews"
-        ]
+        "path": (v0/*: any*/)
       }
-    ]
+    ],
+    "refetch": {
+      "connection": {
+        "forward": {
+          "count": "first",
+          "cursor": "after"
+        },
+        "backward": null,
+        "path": (v0/*: any*/)
+      },
+      "fragmentPathInResult": [],
+      "operation": require('./MovieListPaginationQuery.graphql')
+    }
   },
-  "name": "ReviewWrapper_reviews",
+  "name": "MovieList_query",
   "selections": [
     {
-      "alias": "reviews",
+      "alias": "movies",
       "args": null,
-      "concreteType": "ReviewConnection",
+      "concreteType": "MovieConnection",
       "kind": "LinkedField",
-      "name": "__Movie_reviews_connection",
+      "name": "__MovieList_movies_connection",
       "plural": false,
       "selections": [
         {
           "alias": null,
           "args": null,
-          "concreteType": "ReviewEdge",
+          "concreteType": "MovieEdge",
           "kind": "LinkedField",
           "name": "edges",
           "plural": true,
@@ -78,7 +98,7 @@ const node: ReaderFragment = {
             {
               "alias": null,
               "args": null,
-              "concreteType": "Review",
+              "concreteType": "Movie",
               "kind": "LinkedField",
               "name": "node",
               "plural": false,
@@ -94,47 +114,13 @@ const node: ReaderFragment = {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
-                  "name": "review",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "score",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "concreteType": "User",
-                  "kind": "LinkedField",
-                  "name": "userId",
-                  "plural": false,
-                  "selections": [
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "_id",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "username",
-                      "storageKey": null
-                    }
-                  ],
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
                   "name": "__typename",
                   "storageKey": null
+                },
+                {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "Movie_movie"
                 }
               ],
               "storageKey": null
@@ -185,8 +171,9 @@ const node: ReaderFragment = {
       "storageKey": null
     }
   ],
-  "type": "Movie",
+  "type": "Query",
   "abstractKey": null
 };
-(node as any).hash = 'a85b824fa641fc60f3a571c1e0d5016c';
+})();
+(node as any).hash = 'b6ff1f99d1e74b86683d3762e591f8d6';
 export default node;

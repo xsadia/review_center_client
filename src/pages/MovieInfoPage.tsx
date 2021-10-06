@@ -146,7 +146,10 @@ export const MovieInfoPage = () => {
           </InformationContainer>
         </MovieContainer>
         <ReviewInput movieId={response.movieById.id} />
-        <ReviewWrapper query={response.movieById} />
+        <ReviewWrapper
+          query={response.movieById}
+          movieId={response.movieById.id}
+        />
       </Container>
       <ToastContainer />
     </>

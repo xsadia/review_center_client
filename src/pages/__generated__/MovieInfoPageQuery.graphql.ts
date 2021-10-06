@@ -62,6 +62,7 @@ fragment ReviewWrapper_reviews on Movie {
     edges {
       cursor
       node {
+        id
         review
         score
         userId {
@@ -69,7 +70,6 @@ fragment ReviewWrapper_reviews on Movie {
           username
           id
         }
-        id
         __typename
       }
     }
@@ -281,6 +281,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -309,7 +310,6 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -415,12 +415,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "eab82d78bdd8c08882354d900b572c86",
+    "cacheID": "e106780658402a86549d1a5b82a83ab7",
     "id": null,
     "metadata": {},
     "name": "MovieInfoPageQuery",
     "operationKind": "query",
-    "text": "query MovieInfoPageQuery(\n  $id: String!\n) {\n  movieById(id: $id) {\n    _id\n    id\n    title\n    firstAirDate\n    overview\n    score\n    posterPath\n    ...ReviewWrapper_reviews\n    genres {\n      edges {\n        node {\n          genreName\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment ReviewWrapper_reviews on Movie {\n  reviews(first: 2147483647) {\n    edges {\n      cursor\n      node {\n        review\n        score\n        userId {\n          _id\n          username\n          id\n        }\n        id\n        __typename\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
+    "text": "query MovieInfoPageQuery(\n  $id: String!\n) {\n  movieById(id: $id) {\n    _id\n    id\n    title\n    firstAirDate\n    overview\n    score\n    posterPath\n    ...ReviewWrapper_reviews\n    genres {\n      edges {\n        node {\n          genreName\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment ReviewWrapper_reviews on Movie {\n  reviews(first: 2147483647) {\n    edges {\n      cursor\n      node {\n        id\n        review\n        score\n        userId {\n          _id\n          username\n          id\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

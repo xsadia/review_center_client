@@ -1,11 +1,22 @@
 import { graphql } from 'babel-plugin-relay/macro';
-import { loadQuery, usePreloadedQuery } from 'react-relay';
-import { MovieListQuery as MovieListQueryType } from './__generated__/MovieListQuery.graphql';
+import {
+  loadQuery,
+  usePaginationFragment,
+  usePreloadedQuery,
+} from 'react-relay';
 import styled from 'styled-components';
 import RelayEnviroment from '../../relay/RelayEnviroment';
-import MovieListQuery from './__generated__/MovieListQuery.graphql';
 import { Movie } from './Movie';
-import React from 'react';
+import React, { useCallback } from 'react';
+import {
+  MovieList_query,
+  MovieList_query$key,
+} from './__generated__/MovieList_query.graphql';
+import { MovieListPaginationQuery } from './__generated__/MovieListPaginationQuery.graphql';
+
+type MovieListProps = {
+  query: MovieList_query$key;
+};
 
 const Container = styled.div`
   display: flex;
@@ -17,7 +28,7 @@ const Container = styled.div`
   margin-top: 48px;
 `;
 
-const MoviesQuery = graphql`
+/* const MoviesQuery = graphql`
   query MovieListQuery($first: Int!) {
     movies(first: $first) {
       edges {
@@ -42,11 +53,51 @@ const preloadedQuery = loadQuery<MovieListQueryType>(
   MoviesQuery,
   { first: 8 },
 );
-
-export const MovieList = () => {
-  const data = usePreloadedQuery(MovieListQuery, preloadedQuery, {
+ */
+export const MovieList = ({ query }: MovieListProps) => {
+  /* const data = usePreloadedQuery(MovieListQuery, preloadedQuery, {
     UNSTABLE_renderPolicy: 'full',
-  });
+  }); */
+
+  const { data, loadNext, isLoadingNext } = usePaginationFragment<
+    MovieListPaginationQuery,
+    MovieList_query$key
+  >(
+    graphql`
+      fragment MovieList_query on Query
+      @argumentDefinitions(
+        first: { type: Int, defaultValue: 4 }
+        after: { type: String }
+      )
+      @refetchable(queryName: "MovieListPaginationQuery") {
+        movies(first: $first, after: $after)
+          @connection(key: "MovieList_movies") {
+          edges {
+            cursor
+            node {
+              id
+              ...Movie_movie
+            }
+          }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+        }
+      }
+    `,
+    query,
+  );
+
+  const loadMore = useCallback(() => {
+    if (isLoadingNext) {
+      return;
+    }
+
+    loadNext(4);
+  }, [loadNext, isLoadingNext]);
 
   return (
     <Container>
@@ -55,6 +106,7 @@ export const MovieList = () => {
           <Movie query={node} />
         </React.Fragment>
       ))}
+      <button onClick={() => loadMore()}>load</button>
     </Container>
   );
 };

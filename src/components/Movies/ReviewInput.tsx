@@ -71,7 +71,7 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
   //const connectionID = ConnectionHandler.getConnectionID()
   const [reviewContent, setReviewContent] = useState('');
   const [reviewScore, setReviewScore] = useState(null);
-  const [commit, isPending] = useMutation<ReviewInputMutation>(
+  const [commitReview, isPending] = useMutation<ReviewInputMutation>(
     graphql`
       mutation ReviewInputMutation(
         #$connections: [ID!]!
@@ -100,7 +100,7 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    commit({
+    commitReview({
       variables: {
         //connections: [connectionID],
         input: {
@@ -152,7 +152,7 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
     });
 
     setReviewContent('');
-    setReviewScore(null);
+    setReviewScore(0);
   };
 
   return (
@@ -160,11 +160,13 @@ export const ReviewInput = ({ movieId }: ReviewInputProps) => {
       <Form onSubmit={handleSubmit}>
         <InputContainer>
           <Input
+            value={reviewContent}
             placeholder="Make a review..."
             type="text"
             onChange={(e) => setReviewContent(e.target.value)}
           />
           <ScoreInput
+            value={reviewScore}
             type="number"
             placeholder="stars"
             max="5"

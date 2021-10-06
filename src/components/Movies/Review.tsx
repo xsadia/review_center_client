@@ -1,7 +1,15 @@
 import styled from 'styled-components';
 import { BsStarFill } from 'react-icons/bs';
+import { IoMdTrash } from 'react-icons/io';
+import { ConnectionHandler, useMutation } from 'react-relay';
+import { graphql } from 'babel-plugin-relay/macro';
+import { Review_deleteReviewMutation } from './__generated__/Review_deleteReviewMutation.graphql';
+import { FormEvent } from 'react';
+import { toast } from 'react-toastify';
 
 type ReviewProps = {
+  id: string;
+  movieId: string;
   review: string;
   username: string;
   score: number;
@@ -28,6 +36,8 @@ const ScoreContainer = styled.div`
 
 const ReviewBody = styled.p`
   color: #fff;
+  word-wrap: break-word;
+  max-width: 480px;
 `;
 
 const Username = styled.h1`
@@ -42,7 +52,92 @@ const Score = styled.span`
   margin-right: 4px;
 `;
 
-export const Review = ({ review, score, username }: ReviewProps) => {
+const ReviewContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 500px;
+  align-items: flex-start;
+`;
+
+const DeleteButton = styled.button`
+  outline: none;
+  border: none;
+  background: none;
+
+  color: var(--pink);
+
+  svg {
+    font-size: 1.25rem;
+  }
+`;
+
+export const Review = ({
+  review,
+  score,
+  username,
+  movieId,
+  id,
+}: ReviewProps) => {
+  const [commitDeleteReview] = useMutation<Review_deleteReviewMutation>(graphql`
+    mutation Review_deleteReviewMutation($input: DeleteReviewInput!) {
+      DeleteReviewMutation(input: $input) {
+        success
+        error
+      }
+    }
+  `);
+
+  const handleDeleteReview = (event: FormEvent) => {
+    event.preventDefault();
+
+    commitDeleteReview({
+      variables: {
+        input: {
+          movieId,
+        },
+      },
+      onCompleted: ({ DeleteReviewMutation }) => {
+        if (DeleteReviewMutation.error) {
+          toast(DeleteReviewMutation.error, {
+            type: 'error',
+            theme: 'dark',
+            position: 'bottom-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          return;
+        }
+
+        toast('Post deleted with success', {
+          type: 'success',
+          theme: 'dark',
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        return;
+      },
+      updater: (store) => {
+        const movieRecord = store.get(movieId);
+        const connection = ConnectionHandler.getConnection(
+          movieRecord,
+          'Movie_reviews',
+        );
+
+        ConnectionHandler.deleteNode(connection, id);
+      },
+    });
+  };
+
   return (
     <Container>
       <UsernameContainer>
@@ -52,7 +147,12 @@ export const Review = ({ review, score, username }: ReviewProps) => {
           <BsStarFill />
         </ScoreContainer>
       </UsernameContainer>
-      <ReviewBody>{review}</ReviewBody>
+      <ReviewContainer>
+        <ReviewBody>{review}</ReviewBody>
+        <DeleteButton onClick={(e) => handleDeleteReview(e)}>
+          <IoMdTrash />
+        </DeleteButton>
+      </ReviewContainer>
     </Container>
   );
 };
